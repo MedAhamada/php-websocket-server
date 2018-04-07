@@ -36,3 +36,4 @@ COPY composer.lock ./
 
 RUN composer update --no-interaction
 EXPOSE 80
+EXPOSE 8888
