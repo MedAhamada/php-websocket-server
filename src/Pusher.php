@@ -9,6 +9,7 @@ use Ratchet\Wamp\WampServerInterface;
 
 class Pusher implements WampServerInterface
 {
+    protected $availableTopics = array();
 
     /**
      * When a new connection is opened it will be passed to this method
@@ -51,7 +52,7 @@ class Pusher implements WampServerInterface
      */
     function onCall(ConnectionInterface $conn, $id, $topic, array $params)
     {
-        // TODO: Implement onCall() method.
+        $conn->callError($id, $topic, 'You are not allowed to make calls')->close();
     }
 
     /**
@@ -61,7 +62,7 @@ class Pusher implements WampServerInterface
      */
     function onSubscribe(ConnectionInterface $conn, $topic)
     {
-        // TODO: Implement onSubscribe() method.
+        $this->availableTopics[$topic->getId()] = $topic;
     }
 
     /**
@@ -84,6 +85,20 @@ class Pusher implements WampServerInterface
      */
     function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
     {
-        // TODO: Implement onPublish() method.
+        $conn->close();
+    }
+
+    public function handleNewMessage($message)
+    {
+        $data = json_decode($message, true);
+        // If the lookup topic object isn't set there is no one to publish to
+        if (!array_key_exists($data['_eventId'], $this->availableTopics)) {
+            return;
+        }
+
+        $topic = $this->availableTopics[$data['_eventId']];
+
+        // re-send the data to all the clients subscribed to that category
+        $topic->broadcast($data);
     }
 }

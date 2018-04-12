@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-php server.php
+php example/push-server.php
