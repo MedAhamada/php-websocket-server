@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WS Client</title>
+    <title>Gallery</title>
 </head>
 <body>
+
+<h1>Open the console to see what's happening !</h1>
 
 <script type="text/javascript" src="js/autobahn.js"></script>
 <script>
     var conn = new ab.Session('ws://127.0.0.1:8888',
         function() {
             conn.subscribe('event-123456', function(topic, data) {
-                // This is where you would add the new article to the DOM (beyond the scope of this tutorial)
-                console.log('New article published to category "' + topic + '" : ' + data);
+                // This is where you would add the new images to the DOM
+                console.log('Topic: ' + topic );
+                console.log(data);
             });
         },
         function() {

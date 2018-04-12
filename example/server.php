@@ -1,31 +1,26 @@
 <?php
-/*
-*  Hello World server
-*  Binds REP socket to tcp://*:5555
-*  Expects "Hello" from client, replies with "World"
-* @author Ian Barber <ian(dot)barber(at)gmail(dot)com>
-*/
+require dirname(__DIR__) . '/vendor/autoload.php';
 
-$context = new ZMQContext(1);
+$loop   = React\EventLoop\Factory::create();
+$pusher = new StorytellingApp\WsServer\Pusher();
 
-/**
- * Socket to talk to clients
- */
-$responder = new ZMQSocket($context, ZMQ::SOCKET_REP);
+$context = new React\ZMQ\Context($loop);
+$pull = $context->getSocket(ZMQ::SOCKET_PULL);
+$pull->bind('tcp://*:5555');
+$pull->on('message', array($pusher, 'handleNewMessage'));
 
-try{
-    $responder->bind("tcp://*:5555");
-    while (true) {
-        //  Wait for next request from client
-        $request = $responder->recv();
-        printf ("Received request: [%s]\n", $request);
+// Set up our WebSocket server for clients wanting real-time updates
+$webSock = new React\Socket\Server('127.0.0.1:8888', $loop);
 
-        //  Do some 'work'
-        sleep (1);
+$webServer = new Ratchet\Server\IoServer(
+    new Ratchet\Http\HttpServer(
+        new Ratchet\WebSocket\WsServer(
+            new Ratchet\Wamp\WampServer(
+                $pusher
+            )
+        )
+    ),
+    $webSock
+);
 
-        //  Send reply back to client
-        $responder->send("World");
-    }
-}catch (ZMQSocketException $exception){
-    echo $exception->getTraceAsString();
-}
+$loop->run();
