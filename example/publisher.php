@@ -3,11 +3,9 @@
 function publish($data){
     try {
         $context = new ZMQContext();
-        $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my-pusher');
+        $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'event-publisher');
         $socket->connect("tcp://localhost:5555");
-
-        $socket->send(json_encode($data));
-
+        $socket->send($data);
     }catch (Exception $exception){
         echo $exception->getTraceAsString(); die;
     }

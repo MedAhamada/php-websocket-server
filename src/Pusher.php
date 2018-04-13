@@ -90,7 +90,7 @@ class Pusher implements WampServerInterface
 
     public function handleNewMessage($message)
     {
-        $data = json_decode(json_decode($message, true), true);
+        $data = json_decode($message, true);
 
         // If the lookup topic object isn't set there is no one to publish to
         // Topics are event's ids
