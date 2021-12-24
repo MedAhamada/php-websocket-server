@@ -1,5 +1,5 @@
 {
-    "name": "multiinfo/mystorytelling-wsserver",
+    "name": "medahamada/zeromq-demo",
     "description": "Instant App Web Socket Server",
     "type": "project",
     "require": {
@@ -9,7 +9,7 @@
         "react/zmq": "^0.3.0"
     },
     "autoload": {
-        "psr-4": { "StorytellingApp\\WsServer\\": "src/" }
+        "psr-4": { "ZeroMQDemo\\WsServer\\": "src/" }
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0"

@@ -1,6 +1,6 @@
 <?php
 
-namespace StorytellingApp\WsServer;
+namespace ZeroMQDemo\WsServer;
 
 final class Config
 {
