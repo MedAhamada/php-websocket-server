@@ -1,5 +1,5 @@
 {
-    "name": "medahamada/zeromq-demo",
+    "name": "medahamada/php-websocket-server",
     "description": "Instant App Web Socket Server",
     "type": "project",
     "require": {
